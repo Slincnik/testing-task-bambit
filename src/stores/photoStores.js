@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { reactive, toRefs } from "vue";
 import { api } from "../utils/axios.js";
-import { ALBUM_ID_KEY } from "../utils/keys.js";
+import { ALBUM_ID_KEY, PHOTOS_KEY } from "../utils/keys.js";
 
 export const usePhotoStore = defineStore("photo", () => {
   const state = reactive({
@@ -22,33 +22,27 @@ export const usePhotoStore = defineStore("photo", () => {
 
   async function fetchPhotos(reset = false) {
     if (reset) {
-      state.page = 1;
-      state.photos = [];
-      state.hasMore = true;
+      resetPhotosState();
     }
 
     if (!state.hasMore) return;
 
     state.loading = true;
     try {
-      let url = "/photos";
+      const url = buildUrl();
 
-      if (state.albumIds.length) {
-        const params = state.albumIds.map((id) => `albumId=${id}`).join("&");
-        url += `?${params}&_page=${state.page}&_limit=${state.perPage}`;
-      } else {
-        url += `?_page=${state.page}&_limit=${state.perPage}`;
-      }
       const response = await api.get(url);
-
-      if (!response.data.length) {
-        state.hasMore = false;
-      }
+      const data = response.data;
 
       if (reset) {
-        state.photos = response.data;
+        state.photos = data;
       } else {
-        state.photos = [...state.photos, ...response.data];
+        state.photos = [...state.photos, ...data];
+      }
+
+      // Если данные закончились, прекратили загрузку
+      if (data.length < state.perPage) {
+        state.hasMore = false;
       }
     } catch (error) {
       console.error("Произошла ошибка");
@@ -65,13 +59,35 @@ export const usePhotoStore = defineStore("photo", () => {
       state.sortOrder = "asc";
     }
 
-    const multiplier = state.sortOrder === "asc" ? 1 : -1;
+    applySort();
+  }
 
-    state.photos.sort((a, b) => {
-      if (a[key] < b[key]) return -1 * multiplier;
-      if (a[key] > b[key]) return 1 * multiplier;
-      return 0;
-    });
+  function applySort() {
+    if (!state.sortKey) return;
+
+    const multiplier = state.sortOrder === "asc" ? 1 : -1;
+    const key = state.sortKey;
+
+    state.photos.sort((a, b) => (a[key] > b[key] ? 1 : -1) * multiplier);
+  }
+
+  function buildUrl() {
+    const query = new URLSearchParams();
+
+    if (state.albumIds.length) {
+      state.albumIds.forEach((id) => query.append("albumId", id));
+    }
+
+    query.append("_page", state.page.toString());
+    query.append("_limit", state.perPage.toString());
+
+    return `${PHOTOS_KEY}?${query.toString()}`;
+  }
+
+  function resetPhotosState() {
+    state.page = 1;
+    state.photos = [];
+    state.hasMore = true;
   }
 
   function setAlbumsIds(ids) {
@@ -80,10 +96,9 @@ export const usePhotoStore = defineStore("photo", () => {
   }
 
   function loadMore() {
-    if (state.hasMore && !state.loading) {
-      state.page += 1;
-      fetchPhotos();
-    }
+    if (!state.hasMore || state.loading) return;
+    state.page += 1;
+    fetchPhotos();
   }
 
   return {
