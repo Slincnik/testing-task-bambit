@@ -16,14 +16,14 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, useTemplateRef } from "vue";
+import { computed, nextTick, onMounted, useTemplateRef, watch } from "vue";
 import { usePhotoStore } from "../stores/photoStores.js";
 import { storeToRefs } from "pinia";
 import TableHeader from "./PhotoTable/TableHeader.vue";
 import TableBody from "./PhotoTable/TableBody.vue";
 
 const photoStore = usePhotoStore();
-const { loading, perPage, photos, sortKey, sortOrder, hasMore } =
+const { loading, perPage, photos, sortKey, sortOrder, hasMore, albumIds } =
   storeToRefs(photoStore);
 
 const scrollContainer = useTemplateRef("scrollContainer");
@@ -41,10 +41,13 @@ const skeletonCount = computed(() => Math.floor(perPage.value / 2));
 const sortBy = (key) => {
   photoStore.sortPhotos(key);
   nextTick(() => {
-    console.log(scrollContainer.value);
     scrollContainer.value.scrollTo({ top: 0, behavior: "smooth" });
   });
 };
+
+watch(albumIds, () => {
+  scrollContainer.value.scrollTo({ top: 0, behavior: "smooth" });
+});
 
 const checkScroll = computed(() => !loading.value && hasMore.value);
 
