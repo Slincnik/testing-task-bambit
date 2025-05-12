@@ -12,6 +12,7 @@ export const usePhotoStore = defineStore("photo", () => {
     sortOrder: "asc",
     page: 1,
     perPage: 30,
+    hasMore: true, // Для проверки, нужно ли грузить новые данные
   });
 
   const savedAlbumIds = localStorage.getItem(ALBUM_ID_KEY);
@@ -23,7 +24,11 @@ export const usePhotoStore = defineStore("photo", () => {
     if (reset) {
       state.page = 1;
       state.photos = [];
+      state.hasMore = true;
     }
+
+    if (!state.hasMore) return;
+
     state.loading = true;
     try {
       let url = "/photos";
@@ -35,6 +40,10 @@ export const usePhotoStore = defineStore("photo", () => {
         url += `?_page=${state.page}&_limit=${state.perPage}`;
       }
       const response = await api.get(url);
+
+      if (!response.data.length) {
+        state.hasMore = false;
+      }
 
       if (reset) {
         state.photos = response.data;
@@ -71,8 +80,10 @@ export const usePhotoStore = defineStore("photo", () => {
   }
 
   function loadMore() {
-    state.page += 1;
-    fetchPhotos();
+    if (state.hasMore && !state.loading) {
+      state.page += 1;
+      fetchPhotos();
+    }
   }
 
   return {
@@ -83,4 +94,3 @@ export const usePhotoStore = defineStore("photo", () => {
     loadMore,
   };
 });
-
