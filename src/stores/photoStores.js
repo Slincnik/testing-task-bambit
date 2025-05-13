@@ -22,6 +22,11 @@ export const usePhotoStore = defineStore("photo", () => {
     state.albumIds = savedAlbumIds.split(",").map((id) => id.trim());
   }
 
+  /**
+   * Получает фотографии с сервера.
+   * Если есть параметр reset, то сбрасывает состояние.
+   * @param {boolean} [reset=false] - сбросить состояние до режима по умолчанию
+   */
   async function fetchPhotos(reset = false) {
     if (reset) {
       resetPhotosState();
@@ -54,6 +59,10 @@ export const usePhotoStore = defineStore("photo", () => {
     }
   }
 
+  /**
+   * Сортирует фотографии.
+   * @param {string} key - поле, по которому происходит сортировка
+   */
   function sortPhotos(key) {
     if (state.sortKey === key) {
       state.sortOrder = state.sortOrder === "asc" ? "desc" : "asc";
@@ -65,6 +74,10 @@ export const usePhotoStore = defineStore("photo", () => {
     applySort();
   }
 
+  /**
+   * Применяет сортировку к отсортированному массиву фотографий.
+   * Если state.sortKey === null, то ничего не делает.
+   */
   function applySort() {
     if (!state.sortKey) return;
 
@@ -78,12 +91,20 @@ export const usePhotoStore = defineStore("photo", () => {
     state.photos = state.photos.slice(0, state.perPage);
   }
 
+  /**
+   * Сброс сортировки до значений по умолчанию.
+   */
   function resetSort() {
     state.sortKey = null;
     state.sortOrder = "asc";
     state.photos = [...state.allPhotos];
   }
 
+  /**
+   * Создает URL для запроса фотографий.
+   * URL-адрес содержит идентификаторы альбомов, если таковые имеются, а также параметры _page и _limit.
+   * @returns {string} URL строка
+   */
   function buildUrl() {
     const query = new URLSearchParams();
 
@@ -97,17 +118,30 @@ export const usePhotoStore = defineStore("photo", () => {
     return `${PHOTOS_KEY}?${query.toString()}`;
   }
 
+  /**
+   * Сбрасывает состояние фотографий.
+   */
   function resetPhotosState() {
     state.page = 1;
     state.photos = [];
     state.hasMore = true;
   }
 
+  /**
+   * Устанавливает идентификаторы альбомов и сохраняет их в локальном хранилище.
+   * @param {number[]} ids TИдентификаторы альбомов, которые нужно установить.
+   */
   function setAlbumsIds(ids) {
     state.albumIds = ids;
     localStorage.setItem(ALBUM_ID_KEY, ids.join(","));
   }
 
+  /**
+   * При достижении конца списка загружается больше фотографий.
+   * Загружается больше фотографий, если доступно больше фотографий (значение state.hasMore - true),
+   * запрос еще не загружается, нет активной сортировки и ошибки.
+   * Увеличивает номер текущей страницы, обновляет список фотографий новой страницей и извлекает новые фотографии.
+   */
   function loadMore() {
     if (!state.hasMore || loading.value || state.sortKey || error.value) return;
     state.page += 1;

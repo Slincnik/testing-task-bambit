@@ -46,16 +46,20 @@ const sortBy = (key) => {
   });
 };
 
+// При смене альбома скроллим в самый вверх
 watch(albumIds, () => {
   scrollContainer.value.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+// При смене сортировки скроллим в самый вверх
 watch(sortKey, () => {
   scrollContainer.value.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+// Если данных нету, проверяем нужно ли загружать
 const checkScroll = computed(() => !loading.value && hasMore.value);
 
+// При скролле проверяем нужно ли загружать данные
 const handleScroll = useDebounceFn(() => {
   const container = scrollContainer.value;
   if (
