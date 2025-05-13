@@ -21,6 +21,7 @@ import { usePhotoStore } from "../stores/photoStores.js";
 import { storeToRefs } from "pinia";
 import TableHeader from "./PhotoTable/TableHeader.vue";
 import TableBody from "./PhotoTable/TableBody.vue";
+import { useDebounceFn } from "@vueuse/core";
 
 const photoStore = usePhotoStore();
 const { loading, perPage, photos, sortKey, sortOrder, hasMore, albumIds } =
@@ -55,7 +56,7 @@ watch(sortKey, () => {
 
 const checkScroll = computed(() => !loading.value && hasMore.value);
 
-const handleScroll = () => {
+const handleScroll = useDebounceFn(() => {
   const container = scrollContainer.value;
   if (
     checkScroll.value &&
@@ -63,7 +64,7 @@ const handleScroll = () => {
   ) {
     photoStore.loadMore();
   }
-};
+}, 150);
 
 onMounted(() => {
   photoStore.fetchPhotos();
