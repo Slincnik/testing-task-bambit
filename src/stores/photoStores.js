@@ -5,7 +5,8 @@ import { ALBUM_ID_KEY, PHOTOS_KEY } from "../utils/keys.js";
 
 export const usePhotoStore = defineStore("photo", () => {
   const state = reactive({
-    photos: [],
+    photos: [], // Отсортированных / фильтрованных
+    allPhotos: [], // Массив всех фотографий
     albumIds: [],
     loading: false,
     sortKey: null,
@@ -35,10 +36,12 @@ export const usePhotoStore = defineStore("photo", () => {
       const data = response.data;
 
       if (reset) {
-        state.photos = data;
+        state.allPhotos = data;
       } else {
-        state.photos = [...state.photos, ...data];
+        state.allPhotos = [...state.allPhotos, ...data];
       }
+
+      state.photos = state.allPhotos.slice(0, state.page * state.perPage);
 
       // Если данные закончились, прекратили загрузку
       if (data.length < state.perPage) {
@@ -68,7 +71,16 @@ export const usePhotoStore = defineStore("photo", () => {
     const multiplier = state.sortOrder === "asc" ? 1 : -1;
     const key = state.sortKey;
 
-    state.photos.sort((a, b) => (a[key] > b[key] ? 1 : -1) * multiplier);
+    state.allPhotos.sort((a, b) => (a[key] > b[key] ? 1 : -1) * multiplier);
+
+    // Отображаем только первые 30
+    state.photos = state.allPhotos.slice(0, state.perPage);
+  }
+
+  function resetSort() {
+    state.sortKey = null;
+    state.sortOrder = "asc";
+    state.photos = [...state.allPhotos];
   }
 
   function buildUrl() {
@@ -96,8 +108,9 @@ export const usePhotoStore = defineStore("photo", () => {
   }
 
   function loadMore() {
-    if (!state.hasMore || state.loading) return;
+    if (!state.hasMore || state.loading || state.sortKey) return;
     state.page += 1;
+    state.photos = state.allPhotos.slice(0, state.page * state.perPage);
     fetchPhotos();
   }
 
@@ -107,5 +120,6 @@ export const usePhotoStore = defineStore("photo", () => {
     sortPhotos,
     setAlbumsIds,
     loadMore,
+    resetSort,
   };
 });

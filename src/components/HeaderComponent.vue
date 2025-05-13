@@ -18,6 +18,15 @@
       >
         Поиск
       </BaseButton>
+      <BaseButton
+        @click="photoStore.resetSort"
+        type="button"
+        :loading
+        title="Сброс сортировки"
+        class="text-white rounded-xl"
+      >
+        Сброс
+      </BaseButton>
     </div>
     <ToggleTheme />
   </header>
@@ -41,5 +50,6 @@ function handleSearch() {
   const ids = albumInput.value.trim().split(" ").filter(Boolean).map(Number);
   photoStore.setAlbumsIds(ids);
   photoStore.fetchPhotos(true);
+  photoStore.resetSort();
 }
 </script>
