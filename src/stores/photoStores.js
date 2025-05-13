@@ -71,10 +71,11 @@ export const usePhotoStore = defineStore("photo", () => {
     const multiplier = state.sortOrder === "asc" ? 1 : -1;
     const key = state.sortKey;
 
-    state.allPhotos.sort((a, b) => (a[key] > b[key] ? 1 : -1) * multiplier);
+    state.photos = [...state.allPhotos];
+    state.photos.sort((a, b) => (a[key] > b[key] ? 1 : -1) * multiplier);
 
     // Отображаем только первые 30
-    state.photos = state.allPhotos.slice(0, state.perPage);
+    state.photos = state.photos.slice(0, state.perPage);
   }
 
   function resetSort() {
