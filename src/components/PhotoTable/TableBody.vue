@@ -1,5 +1,5 @@
 <template>
-  <tbody role="rowgroup">
+  <tbody role="rowgroup" class="divide-y divide-gray-200 dark:divide-gray-700">
     <template v-if="loading && !photos.length">
       <tr role="row" v-for="n in skeletonCount" :key="n">
         <td role="cell" v-for="col in columns" :key="col.key" class="p-2">

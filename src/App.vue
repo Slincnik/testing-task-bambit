@@ -4,10 +4,12 @@ import DisplayPhotos from "./components/DisplayPhotos.vue";
 </script>
 
 <template>
-  <HeaderComponent />
-  <main class="flex justify-center pt-4">
-    <DisplayPhotos />
-  </main>
+  <div class="flex flex-col h-full">
+    <HeaderComponent />
+    <main class="flex max-w-7xl mx-auto py-4 px-4 justify-center">
+      <DisplayPhotos />
+    </main>
+  </div>
 </template>
 
 <style></style>

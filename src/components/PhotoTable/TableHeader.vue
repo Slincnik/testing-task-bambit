@@ -1,5 +1,5 @@
 <template>
-  <thead role="rowgroup" class="sticky top-0 bg-gray-200 dark:bg-gray-800">
+  <thead role="rowgroup" class="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10">
     <tr role="row">
       <th
         v-for="col in columns"

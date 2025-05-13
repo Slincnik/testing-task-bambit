@@ -5,6 +5,7 @@
     @click="toggleDark()"
     aria-label="Переключатель темы"
     :title="isDark ? 'Темная тема' : 'Светлая тема'"
+    shrink
   >
     {{ isDark ? "🌙" : "☀️" }}
   </BaseButton>

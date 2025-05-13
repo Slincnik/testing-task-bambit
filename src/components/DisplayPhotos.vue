@@ -1,6 +1,6 @@
 <template>
   <div
-    class="max-h-[600px] w-[600px] overflow-y-auto border mx-auto relative border-gray-200 dark:border-gray-700 rounded shadow"
+    class="w-full max-w-[600px] max-h-[600px] overflow-y-auto overscroll-contain -webkit-overflow-scrolling-touch border mx-auto border-gray-200 dark:border-gray-700 rounded shadow"
     @scroll="handleScroll"
     ref="scrollContainer"
   >
@@ -46,6 +46,10 @@ const sortBy = (key) => {
 };
 
 watch(albumIds, () => {
+  scrollContainer.value.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+watch(sortKey, () => {
   scrollContainer.value.scrollTo({ top: 0, behavior: "smooth" });
 });
 
