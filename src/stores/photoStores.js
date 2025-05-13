@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive, toRefs } from "vue";
-import { api } from "../utils/axios.js";
+import { useApi } from "../composables/useApi.js";
 import { ALBUM_ID_KEY, PHOTOS_KEY } from "../utils/keys.js";
 
 export const usePhotoStore = defineStore("photo", () => {
@@ -8,13 +8,14 @@ export const usePhotoStore = defineStore("photo", () => {
     photos: [], // Отсортированных / фильтрованных
     allPhotos: [], // Массив всех фотографий
     albumIds: [],
-    loading: false,
     sortKey: null,
     sortOrder: "asc",
     page: 1,
     perPage: 30,
     hasMore: true, // Для проверки, нужно ли грузить новые данные
   });
+
+  const { get, error, loading } = useApi();
 
   const savedAlbumIds = localStorage.getItem(ALBUM_ID_KEY);
   if (savedAlbumIds) {
@@ -28,29 +29,28 @@ export const usePhotoStore = defineStore("photo", () => {
 
     if (!state.hasMore) return;
 
-    state.loading = true;
+    loading.value = true;
     try {
       const url = buildUrl();
 
-      const response = await api.get(url);
-      const data = response.data;
+      const response = await get(url);
 
       if (reset) {
-        state.allPhotos = data;
+        state.allPhotos = response;
       } else {
-        state.allPhotos = [...state.allPhotos, ...data];
+        state.allPhotos = [...state.allPhotos, ...response];
       }
 
       state.photos = state.allPhotos.slice(0, state.page * state.perPage);
 
       // Если данные закончились, прекратили загрузку
-      if (data.length < state.perPage) {
+      if (response.length < state.perPage) {
         state.hasMore = false;
       }
     } catch (error) {
-      console.error("Произошла ошибка");
+      console.error(error);
     } finally {
-      state.loading = false;
+      loading.value = false;
     }
   }
 
@@ -109,7 +109,7 @@ export const usePhotoStore = defineStore("photo", () => {
   }
 
   function loadMore() {
-    if (!state.hasMore || state.loading || state.sortKey) return;
+    if (!state.hasMore || loading.value || state.sortKey || error.value) return;
     state.page += 1;
     state.photos = state.allPhotos.slice(0, state.page * state.perPage);
     fetchPhotos();
@@ -117,6 +117,7 @@ export const usePhotoStore = defineStore("photo", () => {
 
   return {
     ...toRefs(state),
+    loading,
     fetchPhotos,
     sortPhotos,
     setAlbumsIds,
