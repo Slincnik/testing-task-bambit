@@ -1,6 +1,6 @@
 <template>
-  <tbody role="rowgroup" class="divide-y divide-gray-200 dark:divide-gray-700">
-    <template v-if="loading && !photos.length">
+  <tbody role="rowgroup" class="divide-y divide-gray-200 divide-x dark:divide-gray-700">
+    <template v-if="loading && !datas.length">
       <tr role="row" v-for="n in skeletonCount" :key="n">
         <td role="cell" v-for="col in columns" :key="col.key" class="p-2">
           <div
@@ -11,20 +11,15 @@
       </tr>
     </template>
     <template v-else>
-      <tr role="row" v-for="photo in photos" :key="photo.id">
+      <tr role="row" v-for="data in datas" :key="data.id">
         <td
           role="cell"
           v-for="col in columns"
           :key="col.key"
           class="p-1 whitespace-nowrap truncate overflow-hidden"
-          :title="String(photo[col.key])"
+          :title="formatValue(data[col.key], col.type)"
         >
-          {{ photo[col.key] }}
-        </td>
-      </tr>
-      <tr role="row" v-if="loading && photos.length > 0">
-        <td role="cell" :colspan="columns.length" class="text-center p-2">
-          Загрузка...
+          {{ formatValue(data[col.key], col.type) }}
         </td>
       </tr>
     </template>
@@ -32,12 +27,13 @@
 </template>
 
 <script setup>
+import formatValue from "../../utils/formatValue.js"
 defineProps({
   columns: {
     type: Array,
     default: () => [],
   },
-  photos: {
+  datas: {
     type: Array,
     default: () => [],
   },
