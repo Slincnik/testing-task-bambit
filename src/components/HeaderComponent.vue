@@ -2,7 +2,7 @@
   <header
     class="p-4 border-b flex justify-around items-center border-gray-200 dark:border-gray-700"
   >
-    <div class="flex space-x-2 mr-2">
+    <div class="flex space-x-2 items-center mr-2 md:mr-0">
       <BaseInput
         type="text"
         name="Album Inputs"
@@ -15,6 +15,7 @@
         type="button"
         :loading
         class="text-white rounded-xl"
+        :style="{ minWidth: '80px' }"
       >
         Поиск
       </BaseButton>
