@@ -17,6 +17,9 @@ importers:
       axios:
         specifier: ^1.9.0
         version: 1.9.0
+      lucide-vue-next:
+        specifier: ^0.511.0
+        version: 0.511.0(vue@3.5.13)
       pinia:
         specifier: ^3.0.2
         version: 3.0.2(vue@3.5.13)
@@ -688,6 +691,11 @@ packages:
   lightningcss@1.29.2:
     resolution: {integrity: sha512-6b6gd/RUXKaw5keVdSEtqFVdzWnU5jMxTUjA2bVcMNPLwSQ08Sv/UodBVtETLCn7k4S1Ibxwh7k68IwLZPgKaA==}
     engines: {node: '>= 12.0.0'}
+
+  lucide-vue-next@0.511.0:
+    resolution: {integrity: sha512-VSv0F3pHniGN7JMMzDcLFNMQbl8381+shNnHwV8hi+El7xl2ZL8qdNuzPoiBViKk8mTKK5K3ZDfmE/wEcTZVIQ==}
+    peerDependencies:
+      vue: '>=3.0.1'
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -1375,6 +1383,10 @@ snapshots:
       lightningcss-linux-x64-musl: 1.29.2
       lightningcss-win32-arm64-msvc: 1.29.2
       lightningcss-win32-x64-msvc: 1.29.2
+
+  lucide-vue-next@0.511.0(vue@3.5.13):
+    dependencies:
+      vue: 3.5.13
 
   magic-string@0.30.17:
     dependencies:
