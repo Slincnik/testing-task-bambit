@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full max-w-full max-h-[600px] overflow-y-auto overscroll-contain -webkit-overflow-scrolling-touch border mx-auto border-gray-200 dark:border-gray-700 rounded shadow"
+    class="max-h-[600px] overflow-y-auto overscroll-contain border -webkit-overflow-scrolling-touch mx-auto border-gray-200 dark:border-gray-700 rounded shadow"
     ref="scrollContainer"
   >
     <table class="w-full table-fixed border-collapse">

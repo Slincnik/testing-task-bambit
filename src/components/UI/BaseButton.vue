@@ -1,6 +1,8 @@
 <template>
   <button :disabled="loading" :class="btnClasses" type="button">
-    <span v-if="loading" class="animate-spin loader"></span>
+    <span v-if="loading" class="animate-spin">
+      <LoaderCircle />
+    </span>
     <span
       v-else
       class="flex flex-col items-center justify-center text-center whitespace-normal break-words"
@@ -12,6 +14,7 @@
 
 <script setup>
 import { computed } from "vue";
+import { LoaderCircle } from "lucide-vue-next";
 
 const props = defineProps({
   loading: {
@@ -27,11 +30,11 @@ const props = defineProps({
 const btnClasses = computed(() => {
   const base = [
     "inline-flex items-center justify-center",
-    "px-3 py-2 rounded transition-colors shadow",
-    "min-h-[38px]",
+    "px-3 py-2 rounded transition-colors shadow bg-gradient-to-r from-blue-500 to-purple-500",
+    "min-h-[38px] transition-colors",
     props.loading
-      ? "bg-blue-400 cursor-not-allowed"
-      : "bg-blue-500 hover:bg-blue-600 cursor-pointer",
+      ? "opacity-40 cursor-not-allowed"
+      : "hover:from-blue-600 hover:to-purple-600 cursor-pointer",
   ];
 
   // если shrink или loading — не накладываем min/max ширину
