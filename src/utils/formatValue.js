@@ -9,7 +9,7 @@ const STAGE_SEMANTIC_NAMES = {
 };
 
 // Форматирование дат и значений
-export default function formatValue({ data, type, key }) {
+export default function formatValue({ data, type, key, categories }) {
   if (!data) return "";
   if (type === "datetime" || type === "date") {
     const d = new Date(data);
@@ -31,6 +31,11 @@ export default function formatValue({ data, type, key }) {
 
   if (key === "STAGE_SEMANTIC_ID") {
     return STAGE_SEMANTIC_NAMES[data];
+  }
+
+  if (key === "CATEGORY_ID") {
+    console.log(categories);
+    return categories.find(({ id }) => id === Number(data))?.name || data;
   }
 
   return data;

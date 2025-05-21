@@ -24,6 +24,7 @@
             formatValue({
               data: data[col.key],
               ...col,
+              categories: dealStore.state.categories,
             })
           "
         >
@@ -31,6 +32,7 @@
             formatValue({
               data: data[col.key],
               ...col,
+              categories: dealStore.state.categories,
             })
           }}
         </td>
@@ -40,7 +42,10 @@
 </template>
 
 <script setup>
+import { useDealStore } from "../../stores/dealStores.js";
 import formatValue from "../../utils/formatValue.js";
+
+const dealStore = useDealStore();
 defineProps({
   columns: {
     type: Array,

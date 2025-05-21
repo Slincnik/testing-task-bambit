@@ -8,6 +8,7 @@ import {
   USERS_URL,
   DEALS_URL,
   IDS_KEY,
+  CATEGORIES_URL,
 } from "../utils/keys.js";
 
 export const useDealStore = defineStore("deal", () => {
@@ -21,6 +22,7 @@ export const useDealStore = defineStore("deal", () => {
       idFrom: null,
       idTo: null,
     },
+    categories: [],
     sortKey: "",
     sortOrder: "asc",
   });
@@ -50,6 +52,11 @@ export const useDealStore = defineStore("deal", () => {
   async function fetchUsers() {
     const res = await get(USERS_URL);
     state.users = res.result;
+  }
+
+  async function fetchCategories() {
+    const res = await get(CATEGORIES_URL);
+    state.categories = res.result.categories;
   }
 
   async function fetchDeals(reset = false) {
@@ -141,7 +148,12 @@ export const useDealStore = defineStore("deal", () => {
   }
 
   async function fetchAll(reset = false) {
-    await Promise.all([fetchFields(), fetchStatuses(), fetchUsers()]);
+    await Promise.all([
+      fetchFields(),
+      fetchStatuses(),
+      fetchUsers(),
+      fetchCategories(),
+    ]);
     await fetchDeals(reset);
   }
 
