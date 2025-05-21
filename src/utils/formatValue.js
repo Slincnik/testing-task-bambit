@@ -3,13 +3,13 @@ const userLocale = navigator.languages
   : navigator.language || navigator.userLanguage; // Определяем локаль пользователя (ru-RU, en-US и т.п)
 
 // Форматирование дат и значений
-export default function formatValue(value, type) {
-  if (!value) return "";
-  if (type === "datetime" || type === "date") {
-    const d = new Date(value);
+export default function formatValue({ data, type }) {
+  if (!data) return "";
+  if (type === "datetime" || type  === "date") {
+    const d = new Date(data);
 
     if (isNaN(d)) {
-      return value;
+      return data;
     }
     return new Intl.DateTimeFormat(userLocale, {
       year: "numeric",

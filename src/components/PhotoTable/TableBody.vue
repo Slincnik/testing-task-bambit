@@ -1,5 +1,8 @@
 <template>
-  <tbody role="rowgroup" class="divide-y divide-gray-200 divide-x dark:divide-gray-700">
+  <tbody
+    role="rowgroup"
+    class="divide-y divide-gray-200 divide-x dark:divide-gray-700"
+  >
     <template v-if="loading && !datas.length">
       <tr role="row" v-for="n in skeletonCount" :key="n">
         <td role="cell" v-for="col in columns" :key="col.key" class="p-2">
@@ -17,9 +20,19 @@
           v-for="col in columns"
           :key="col.key"
           class="p-1 whitespace-nowrap truncate overflow-hidden"
-          :title="formatValue(data[col.key], col.type)"
+          :title="
+            formatValue({
+              data: data[col.key],
+              ...col,
+            })
+          "
         >
-          {{ formatValue(data[col.key], col.type) }}
+          {{
+            formatValue({
+              data: data[col.key],
+              ...col,
+            })
+          }}
         </td>
       </tr>
     </template>
@@ -27,7 +40,7 @@
 </template>
 
 <script setup>
-import formatValue from "../../utils/formatValue.js"
+import formatValue from "../../utils/formatValue.js";
 defineProps({
   columns: {
     type: Array,
