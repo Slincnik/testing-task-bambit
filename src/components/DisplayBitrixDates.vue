@@ -51,11 +51,11 @@ const sortedDeals = computed(() => {
     let va = a[dealStore.state.sortKey]; // Первое значение
     let vb = b[dealStore.state.sortKey]; // Второе значение
 
-    if (type === "date") {
-      if (!va && !vb) return 0;
-      if (!va) return 1;
-      if (!vb) return -1;
+    if (!va && !vb) return 0;
+    if (!va) return 1;
+    if (!vb) return -1;
 
+    if (type === "date") {
       const dateA = new Date(va);
       const dateB = new Date(vb);
 
@@ -69,10 +69,6 @@ const sortedDeals = computed(() => {
     }
 
     if (type === "integer" || type === "double") {
-      if (va == null && vb == null) return 0;
-      if (va == null) return 1;
-      if (vb == null) return -1;
-
       const numA = Number(va);
       const numB = Number(vb);
 
@@ -82,10 +78,10 @@ const sortedDeals = computed(() => {
 
       return dealStore.state.sortOrder === "asc" ? numA - numB : numB - numA;
     }
-    // Если строка может быть числом - возможно криво сравнивает ?
+
     return dealStore.state.sortOrder === "asc"
-      ? String(va).localeCompare(String(vb))
-      : String(vb).localeCompare(String(va));
+      ? String(va).localeCompare(String(vb), { numeric: true })
+      : String(vb).localeCompare(String(va), { numeric: true });
   });
 });
 
