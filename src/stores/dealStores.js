@@ -18,8 +18,8 @@ export const useDealStore = defineStore("deal", () => {
     users: [],
     loading: false,
     filter: {
-      idFrom: 2,
-      idTo: 23560,
+      idFrom: null,
+      idTo: null,
     },
     sortKey: "",
     sortOrder: "asc",
@@ -57,8 +57,8 @@ export const useDealStore = defineStore("deal", () => {
     try {
       if (reset) state.deals = [];
       const { idFrom, idTo } = state.filter;
-      
-      // Позволяем искать по одному из полей или без них вовсе, 
+
+      // Позволяем искать по одному из полей или без них вовсе,
       // если оба поля пустые, фильтр не будет добавлен, и запрос вернёт все сделки
       const filter = {};
       if (idFrom) filter[">ID"] = idFrom;
