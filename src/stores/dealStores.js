@@ -103,6 +103,11 @@ export const useDealStore = defineStore("deal", () => {
       const stagedStatus = state.statuses.find(
         ({ STATUS_ID }) => STATUS_ID === item.STAGE_ID
       );
+
+      const sourcesNamed = state.statuses.find(
+        ({ STATUS_ID }) => STATUS_ID === item.SOURCE_ID
+      );
+
       const currentAssignedUser = state.users.find(
         ({ ID }) => ID === item.ASSIGNED_BY_ID
       );
@@ -120,6 +125,7 @@ export const useDealStore = defineStore("deal", () => {
         ASSIGNED_BY_ID: currentAssignedUser
           ? `${currentAssignedUser.NAME} ${currentAssignedUser.LAST_NAME}`
           : null,
+        SOURCE_ID: sourcesNamed ? sourcesNamed.NAME : item.SOURCE_ID,
       };
     });
   }
