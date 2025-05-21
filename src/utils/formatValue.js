@@ -2,10 +2,16 @@ const userLocale = navigator.languages
   ? navigator.languages[0]
   : navigator.language || navigator.userLanguage; // Определяем локаль пользователя (ru-RU, en-US и т.п)
 
+const STAGE_SEMANTIC_NAMES = {
+  P: "В работе",
+  S: "Успешно",
+  F: "Провалено",
+};
+
 // Форматирование дат и значений
-export default function formatValue({ data, type }) {
+export default function formatValue({ data, type, key }) {
   if (!data) return "";
-  if (type === "datetime" || type  === "date") {
+  if (type === "datetime" || type === "date") {
     const d = new Date(data);
 
     if (isNaN(d)) {
@@ -21,6 +27,10 @@ export default function formatValue({ data, type }) {
   if (type === "double") {
     const formatNumber = new Intl.NumberFormat(userLocale).format(data);
     return formatNumber;
+  }
+
+  if (key === "STAGE_SEMANTIC_ID") {
+    return STAGE_SEMANTIC_NAMES[data];
   }
 
   return data;
