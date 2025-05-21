@@ -57,11 +57,14 @@ export const useDealStore = defineStore("deal", () => {
     try {
       if (reset) state.deals = [];
       const { idFrom, idTo } = state.filter;
+      
+      // Позволяем искать по одному из полей или без них вовсе, 
+      // если оба поля пустые, фильтр не будет добавлен, и запрос вернёт все сделки
+      const filter = {};
+      if (idFrom) filter[">ID"] = idFrom;
+      if (idTo) filter["<ID"] = idTo;
       const url = buildBitrixUrl(DEALS_URL, {
-        filter: {
-          ">ID": idFrom,
-          "<ID": idTo,
-        },
+        filter,
         select: FIELD_KEYS,
       });
       const res = await get(url);
