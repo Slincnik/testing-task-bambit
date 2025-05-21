@@ -6,7 +6,7 @@ import DisplayBitrixData from "./components/DisplayBitrixDates.vue";
 <template>
   <div class="flex flex-col h-full">
     <HeaderComponent />
-    <main class="flex mx-auto py-4 justify-center">
+    <main class="flex mx-auto py-4 px-4 justify-center">
       <DisplayBitrixData />
     </main>
   </div>
