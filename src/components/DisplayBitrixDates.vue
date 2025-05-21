@@ -7,8 +7,18 @@
       <colgroup>
         <col v-for="col in columns" :key="col.key" />
       </colgroup>
-      <TableHeader :columns :sortKey :sortOrder @bySort="dealStore.sortingBy" />
-      <TableBody :columns :datas="sortedDeals" :loading :skeleton-count="10" />
+      <TableHeader
+        :columns
+        :sortKey="dealStore.state.sortKey"
+        :sortOrder="dealStore.state.sortOrder"
+        @bySort="dealStore.sortingBy"
+      />
+      <TableBody
+        :columns
+        :datas="sortedDeals"
+        :loading="dealStore.state.loading"
+        :skeleton-count="10"
+      />
     </table>
   </div>
 </template>
@@ -16,15 +26,13 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useDealStore } from "../stores/dealStores";
-import { storeToRefs } from "pinia";
 import TableHeader from "./PhotoTable/TableHeader.vue";
 import TableBody from "./PhotoTable/TableBody.vue";
 
 const dealStore = useDealStore();
-const { deals, loading, fields, sortKey, sortOrder } = storeToRefs(dealStore);
 
 const columns = computed(() =>
-  Object.entries(fields.value).map(([key, meta]) => ({
+  Object.entries(dealStore.state.fields).map(([key, meta]) => ({
     key,
     label: meta.title || key, // Вдруг не будет title
     ...meta,
@@ -33,15 +41,15 @@ const columns = computed(() =>
 
 // Сортировка, которая учитывает текущий ключ по которому сортируется
 const sortedDeals = computed(() => {
-  const col = columns.value.find((c) => c.key === sortKey.value);
+  const col = columns.value.find((c) => c.key === dealStore.state.sortKey);
   const type = col?.type;
 
   // Нет столбца - нет сортировки
-  if (!col) return deals.value;
+  if (!col) return dealStore.state.deals;
 
-  return [...deals.value].sort((a, b) => {
-    let va = a[sortKey.value]; // Первое значение
-    let vb = b[sortKey.value]; // Второе значение
+  return [...dealStore.state.deals].sort((a, b) => {
+    let va = a[dealStore.state.sortKey]; // Первое значение
+    let vb = b[dealStore.state.sortKey]; // Второе значение
 
     if (type === "date") {
       if (!va && !vb) return 0;
@@ -55,7 +63,9 @@ const sortedDeals = computed(() => {
       if (isNaN(dateA)) return 1;
       if (isNaN(dateB)) return -1;
 
-      return sortOrder.value === "asc" ? dateA - dateB : dateB - dateA;
+      return dealStore.state.sortOrder === "asc"
+        ? dateA - dateB
+        : dateB - dateA;
     }
 
     if (type === "integer" || type === "double") {
@@ -70,10 +80,10 @@ const sortedDeals = computed(() => {
       if (isNaN(numA)) return 1;
       if (isNaN(numB)) return -1;
 
-      return sortOrder.value === "asc" ? numA - numB : numB - numA;
+      return dealStore.state.sortOrder === "asc" ? numA - numB : numB - numA;
     }
     // Если строка может быть числом - возможно криво сравнивает ?
-    return sortOrder.value === "asc"
+    return dealStore.state.sortOrder === "asc"
       ? String(va).localeCompare(String(vb))
       : String(vb).localeCompare(String(va));
   });

@@ -137,7 +137,7 @@ export const useDealStore = defineStore("deal", () => {
   }
 
   return {
-    ...toRefs(state),
+    state,
     sortingBy,
     fetchAll,
     fetchDeals,

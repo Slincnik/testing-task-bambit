@@ -7,23 +7,23 @@
       <BaseInput
         type="number"
         name="ID от"
-        v-model="idFrom"
-        :loading
+        v-model="dealStore.state.filter.idFrom"
+        :loading="dealStore.state.loading"
         placeholder="ID от"
         min="2"
       />
       <BaseInput
         type="number"
         name="ID до"
-        v-model="idTo"
-        :loading
+        v-model="dealStore.state.filter.idTo"
+        :loading="dealStore.state.loading"
         placeholder="ID до"
         min="2"
       />
       <BaseButton
         @click="handleSearch"
         type="button"
-        :loading
+        :loading="dealStore.state.loading"
         class="text-white rounded-xl"
         :style="{ minWidth: '80px' }"
       >
@@ -40,19 +40,13 @@ import BaseButton from "./UI/BaseButton.vue";
 import BaseInput from "./UI/BaseInput.vue";
 import { useDealStore } from "../stores/dealStores.js";
 
-import { ref } from "vue";
-import { storeToRefs } from "pinia";
-
 const dealStore = useDealStore();
-const { loading, filter } = storeToRefs(dealStore);
 
-const idFrom = ref(filter.value.idFrom);
-const idTo = ref(filter.value.idTo);
 
 function handleSearch() {
   dealStore.setFilter({
-    idFrom: Number(idFrom.value),
-    idTo: Number(idTo.value),
+    idFrom: dealStore.state.filter.idFrom,
+    idTo: dealStore.state.filter.idTo,
   });
   dealStore.fetchDeals(true);
 }
