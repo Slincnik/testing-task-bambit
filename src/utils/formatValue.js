@@ -1,3 +1,7 @@
+const userLocale = navigator.languages
+  ? navigator.languages[0]
+  : navigator.language || navigator.userLanguage; // Определяем локаль пользователя (ru-RU, en-US и т.п)
+
 // Форматирование дат и значений
 export default function formatValue(value, type) {
   if (!value) return "";
@@ -7,11 +11,17 @@ export default function formatValue(value, type) {
     if (isNaN(d)) {
       return value;
     }
-    return new Intl.DateTimeFormat("ru", {
+    return new Intl.DateTimeFormat(userLocale, {
       year: "numeric",
       month: "numeric",
       day: "numeric",
     }).format(d);
   }
-  return value;
+
+  if (type === "double") {
+    const formatNumber = new Intl.NumberFormat(userLocale).format(data);
+    return formatNumber;
+  }
+
+  return data;
 }
