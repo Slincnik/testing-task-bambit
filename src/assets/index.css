@@ -12,7 +12,7 @@
 
 @layer utilities {
   ::-webkit-scrollbar-thumb {
-    @apply bg-blue-500 border-4 border-solid bg-clip-content;
+    @apply bg-blue-500 border-4 border-solid bg-clip-content rounded;
   }
 
   ::-webkit-scrollbar-thumb:hover {

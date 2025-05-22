@@ -39,7 +39,7 @@ const btnClasses = computed(() => {
 
   // если shrink или loading — не накладываем min/max ширину
   if (!props.shrink && !props.loading) {
-    base.push("min-w-[80px] max-w-[200px]");
+    base.push("min-w-[20px] max-w-[200px]");
   }
 
   return base;
