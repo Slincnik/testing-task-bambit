@@ -42,7 +42,6 @@ export default function formatValue({ data, type, key, categories }) {
   }
 
   if (key === "CATEGORY_ID") {
-    console.log(categories);
     return categories.find(({ id }) => id === Number(data))?.name || data;
   }
 
