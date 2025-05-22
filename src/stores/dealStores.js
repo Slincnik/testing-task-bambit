@@ -21,6 +21,7 @@ export const useDealStore = defineStore("deal", () => {
     filter: {
       idFrom: null,
       idTo: null,
+      stages: [],
     },
     categories: {},
     sortKey: "",
@@ -95,6 +96,9 @@ export const useDealStore = defineStore("deal", () => {
       const filter = {};
       if (idFrom) filter[">ID"] = idFrom;
       if (idTo) filter["<ID"] = idTo;
+      if (state.filter.stages.length) {
+        filter["STAGE_ID"] = state.filter.stages;
+      }
       const url = buildBitrixUrl(DEALS_URL, {
         filter,
         select: FIELD_KEYS,

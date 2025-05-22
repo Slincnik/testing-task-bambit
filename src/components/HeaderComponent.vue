@@ -20,6 +20,14 @@
         placeholder="ID до"
         min="2"
       />
+      <BaseSelect
+        :multiple="true"
+        name="Фильтр по стадиям"
+        v-model="dealStore.state.filter.stages"
+        :loading="dealStore.state.loading"
+        :options="selectOptions"
+        placeholder="Фильтр по стадиям"
+      />
       <BaseButton
         @click="handleSearch"
         type="button"
@@ -35,13 +43,14 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import ToggleTheme from "./UI/ToggleTheme.vue";
 import BaseButton from "./UI/BaseButton.vue";
 import BaseInput from "./UI/BaseInput.vue";
 import { useDealStore } from "../stores/dealStores.js";
+import BaseSelect from "./UI/BaseSelect.vue";
 
 const dealStore = useDealStore();
-
 
 function handleSearch() {
   dealStore.setFilter({
@@ -50,4 +59,11 @@ function handleSearch() {
   });
   dealStore.fetchDeals(true);
 }
+
+const selectOptions = computed(() =>
+  Object.entries(dealStore.state.statuses).map(([id, data]) => ({
+    value: id,
+    label: data.NAME,
+  }))
+);
 </script>
