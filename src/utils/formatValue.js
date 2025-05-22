@@ -8,6 +8,14 @@ const STAGE_SEMANTIC_NAMES = {
   F: "Провалено",
 };
 
+export const dateFormatter = new Intl.DateTimeFormat(userLocale, {
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+});
+
+export const numberFormatter = new Intl.NumberFormat(userLocale);
+
 /**
  * Форматирует значение в зависимости от типа и ключа поля.
  * @param {Object} params - Параметры форматирования.
@@ -25,16 +33,11 @@ export default function formatValue({ data, type, key, categories }) {
     if (isNaN(d)) {
       return data;
     }
-    return new Intl.DateTimeFormat(userLocale, {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-    }).format(d);
+    return dateFormatter.format(d);
   }
 
   if (type === "double") {
-    const formatNumber = new Intl.NumberFormat(userLocale).format(data);
-    return formatNumber;
+    return numberFormatter.format(data);
   }
 
   if (key === "STAGE_SEMANTIC_ID") {
