@@ -153,13 +153,12 @@ export const useDealStore = defineStore("deal", () => {
   function convertDeals(result) {
     return result.map((item) => {
       const stagedStatus = state.statuses[item.STAGE_ID];
-      console.log(stagedStatus, "STAGED STATUS");
 
-      const sourcesNamed = state.statuses[item.SOURCE_ID]
+      const sourcesNamed = state.statuses[item.SOURCE_ID];
 
       const currentAssignedUser = state.users[item.ASSIGNED_BY_ID];
 
-      const currentCreatedUser = state.users[item.CREATED_BY_ID]
+      const currentCreatedUser = state.users[item.CREATED_BY_ID];
 
       return {
         ...item,
@@ -176,19 +175,11 @@ export const useDealStore = defineStore("deal", () => {
   }
 
   /**
-   * Устанавливает значения фильтра по id.
-   * @param {{ idFrom: number | null, idTo: number | null }} -
-   *   idFrom - начальный id, idTo - конечный id.
-   *   Если какой-либо id равен null, то фильтр будет отменен.
-   *   @example
-   *     setFilter({ idFrom: 1, idTo: 10 });
-   *     setFilter({ idFrom: null, idTo: null }); // отмена фильтра
+   * Сохраняет фильтр в localStorage.
+   * @param {Object} Фильтр.
    */
-  function setFilter({ idFrom, idTo }) {
-    state.filter.idFrom = idFrom;
-    state.filter.idTo = idTo;
-
-    localStorage.setItem(IDS_KEY, JSON.stringify({ idTo, idFrom }));
+  function setFilter(filters) {
+    localStorage.setItem(IDS_KEY, JSON.stringify(filters));
   }
 
   /**
