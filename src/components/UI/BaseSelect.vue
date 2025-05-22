@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, computed, useTemplateRef } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { ChevronDown } from "lucide-vue-next";
 import { onClickOutside } from "@vueuse/core";
 
@@ -95,16 +95,4 @@ function toggleOption(value) {
     modelValue.value = modelValue.value.filter((v) => v !== value);
   }
 }
-
-const selectedLabels = computed(() =>
-  Array.isArray(props.options)
-    ? props.options
-        .filter((opt) => modelValue.value.includes(opt.value))
-        .map((opt) => opt.label)
-    : []
-);
-
-// Новые вычисляемые свойства для вывода максимум 2 элементов
-const displayedLabels = computed(() => selectedLabels.value.slice(0, 2));
-const restCount = computed(() => Math.max(0, selectedLabels.value.length - 2));
 </script>
