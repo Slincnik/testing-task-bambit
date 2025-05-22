@@ -8,7 +8,15 @@ const STAGE_SEMANTIC_NAMES = {
   F: "Провалено",
 };
 
-// Форматирование дат и значений
+/**
+ * Форматирует значение в зависимости от типа и ключа поля.
+ * @param {Object} params - Параметры форматирования.
+ * @param {unknown} params.data - Значение для форматирования.
+ * @param {string} params.type - Тип поля (например, "datetime", "double").
+ * @param {string} params.key - Ключ поля (например, "CATEGORY_ID").
+ * @param {Array} params.categories - Массив категорий для поиска имени по ID.
+ * @returns {string|*} Отформатированное значение или исходное, если форматирование не требуется.
+ */
 export default function formatValue({ data, type, key, categories }) {
   if (!data) return "";
   if (type === "datetime" || type === "date") {

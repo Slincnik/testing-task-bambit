@@ -37,6 +37,10 @@ export const useDealStore = defineStore("deal", () => {
     state.filter.idTo = newIds.idTo;
   }
 
+  /**
+   * Загружает метаданные полей сделки.
+   * @returns {Promise<void>}
+   */
   async function fetchFields() {
     const res = await get(FIELDS_URL);
     state.fields = Object.fromEntries(
@@ -44,21 +48,38 @@ export const useDealStore = defineStore("deal", () => {
     );
   }
 
+  /**
+   * Загружает статусы сделок.
+   * @returns {Promise<void>}
+   */
   async function fetchStatuses() {
     const res = await get(STATUS_URL);
     state.statuses = res.result;
   }
 
+  /**
+   * Загружает пользователей.
+   * @returns {Promise<void>}
+   */
   async function fetchUsers() {
     const res = await get(USERS_URL);
     state.users = res.result;
   }
 
+  /**
+   * Загружает категории сделок.
+   * @returns {Promise<void>}
+   */
   async function fetchCategories() {
     const res = await get(CATEGORIES_URL);
     state.categories = res.result.categories;
   }
 
+  /**
+   * Загружает сделки с учётом фильтра и сортировки.
+   * @param {boolean} [reset=false] - Сбросить текущий список сделок перед загрузкой.
+   * @returns {Promise<void>}
+   */
   async function fetchDeals(reset = false) {
     state.loading = true;
     try {
@@ -81,6 +102,14 @@ export const useDealStore = defineStore("deal", () => {
     }
   }
 
+  /**
+   * Формирует URL для Bitrix24 API с учётом фильтра и select-полей.
+   * @param {string} base - Базовый URL.
+   * @param {Object} params - Параметры запроса.
+   * @param {Object} [params.filter] - Объект фильтрации.
+   * @param {string[]} [params.select] - Массив ключей для выборки.
+   * @returns {string} Сформированный URL.
+   */
   function buildBitrixUrl(base, params = {}) {
     const url = new URL(base);
     const search = new URLSearchParams();
@@ -99,6 +128,10 @@ export const useDealStore = defineStore("deal", () => {
     return url.toString();
   }
 
+  /**
+   * Меняет ключ и порядок сортировки.
+   * @param {string} key - Ключ сортировки.
+   */
   function sortingBy(key) {
     if (state.sortKey === key) {
       state.sortOrder = state.sortOrder === "asc" ? "desc" : "asc";
@@ -108,6 +141,11 @@ export const useDealStore = defineStore("deal", () => {
     }
   }
 
+  /**
+   * Преобразует массив сделок, подставляя имена пользователей и статусов.
+   * @param {Object[]} result - Массив сделок из API.
+   * @returns {Object[]} Преобразованный массив сделок.
+   */
   function convertDeals(result) {
     return result.map((item) => {
       const stagedStatus = state.statuses.find(
@@ -140,6 +178,16 @@ export const useDealStore = defineStore("deal", () => {
     });
   }
 
+
+  /**
+   * Устанавливает значения фильтра по id.
+   * @param {{ idFrom: number | null, idTo: number | null }} - 
+   *   idFrom - начальный id, idTo - конечный id.
+   *   Если какой-либо id равен null, то фильтр будет отменен.
+   *   @example
+   *     setFilter({ idFrom: 1, idTo: 10 });
+   *     setFilter({ idFrom: null, idTo: null }); // отмена фильтра
+   */
   function setFilter({ idFrom, idTo }) {
     state.filter.idFrom = idFrom;
     state.filter.idTo = idTo;
@@ -147,6 +195,11 @@ export const useDealStore = defineStore("deal", () => {
     localStorage.setItem(IDS_KEY, JSON.stringify({ idTo, idFrom }));
   }
 
+  /**
+   * Загружает все необходимые справочники и сделки.
+   * @param {boolean} [reset=false] - Сбросить текущий список сделок перед загрузкой.
+   * @returns {Promise<void>}
+   */
   async function fetchAll(reset = false) {
     await Promise.all([
       fetchFields(),
