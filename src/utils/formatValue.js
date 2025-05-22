@@ -23,9 +23,10 @@ export const numberFormatter = new Intl.NumberFormat(userLocale);
  * @param {string} params.type - Тип поля (например, "datetime", "double").
  * @param {string} params.key - Ключ поля (например, "CATEGORY_ID").
  * @param {Object} params.categories - Объект типа КЛЮЧ-ЗНАЧЕНИЕ, где ключ ID категории.
+ * @param {Object} params.stages - Объект типа КЛЮЧ-ЗНАЧЕНИЕ, где ключ ID этапа.
  * @returns {string|*} Отформатированное значение или исходное, если форматирование не требуется.
  */
-export default function formatValue({ data, type, key, categories }) {
+export default function formatValue({ data, type, key, categories, stages }) {
   if (!data) return "";
   if (type === "datetime" || type === "date") {
     const d = new Date(data);
@@ -46,6 +47,10 @@ export default function formatValue({ data, type, key, categories }) {
 
   if (key === "CATEGORY_ID") {
     return categories[data]?.name || data;
+  }
+
+  if (key === "STAGE_ID") {
+    return stages[data].NAME || data;
   }
 
   return data;

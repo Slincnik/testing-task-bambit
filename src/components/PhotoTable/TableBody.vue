@@ -25,6 +25,7 @@
               data: data[col.key],
               ...col,
               categories: dealStore.state.categories,
+              stages: dealStore.state.stages,
             })
           "
         >
@@ -33,6 +34,7 @@
               data: data[col.key],
               ...col,
               categories: dealStore.state.categories,
+              stages: dealStore.state.stages,
             })
           }}
         </td>

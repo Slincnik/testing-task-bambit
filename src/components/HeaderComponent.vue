@@ -61,7 +61,7 @@ function handleSearch() {
 }
 
 const selectOptions = computed(() =>
-  Object.entries(dealStore.state.statuses).map(([id, data]) => ({
+  Object.entries(dealStore.state.stages).map(([id, data]) => ({
     value: id,
     label: data.NAME,
   }))

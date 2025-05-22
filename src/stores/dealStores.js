@@ -16,6 +16,7 @@ export const useDealStore = defineStore("deal", () => {
     deals: [],
     fields: {},
     statuses: {},
+    stages: {},
     users: {},
     loading: false,
     filter: {
@@ -56,7 +57,14 @@ export const useDealStore = defineStore("deal", () => {
   async function fetchStatuses() {
     const res = await get(STATUS_URL);
     state.statuses = Object.fromEntries(
-      res.result.map((s) => [s.STATUS_ID, s])
+      res.result
+        .filter((s) => !s.ENTITY_ID.includes("DEAL_STAGE"))
+        .map((s) => [s.STATUS_ID, s])
+    );
+    state.stages = Object.fromEntries(
+      res.result
+        .filter((s) => s.ENTITY_ID.includes("DEAL_STAGE"))
+        .map((s) => [s.STATUS_ID, s])
     );
   }
 
@@ -156,7 +164,7 @@ export const useDealStore = defineStore("deal", () => {
    */
   function convertDeals(result) {
     return result.map((item) => {
-      const stagedStatus = state.statuses[item.STAGE_ID];
+      const stagedStatus = state.stages[item.STATUS_ID];
 
       const sourcesNamed = state.statuses[item.SOURCE_ID];
 
