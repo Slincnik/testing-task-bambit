@@ -132,7 +132,11 @@ export const useDealStore = defineStore("deal", () => {
 
     if (params.filter) {
       Object.entries(params.filter).forEach(([key, value]) => {
-        search.append(`filter[${key}]`, value);
+        if (Array.isArray(value)) {
+          value.forEach((v, idx) => search.append(`filter[${key}][${idx}]`, v));
+        } else {
+          search.append(`filter[${key}]`, value);
+        }
       });
     }
     if (params.select) {
