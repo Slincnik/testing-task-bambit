@@ -15,14 +15,14 @@ export const useDealStore = defineStore("deal", () => {
   const state = reactive({
     deals: [],
     fields: {},
-    statuses: [],
-    users: [],
+    statuses: {},
+    users: {},
     loading: false,
     filter: {
       idFrom: null,
       idTo: null,
     },
-    categories: [],
+    categories: {},
     sortKey: "",
     sortOrder: "asc",
   });
@@ -54,7 +54,9 @@ export const useDealStore = defineStore("deal", () => {
    */
   async function fetchStatuses() {
     const res = await get(STATUS_URL);
-    state.statuses = res.result;
+    state.statuses = Object.fromEntries(
+      res.result.map((s) => [s.STATUS_ID, s])
+    );
   }
 
   /**
@@ -63,7 +65,7 @@ export const useDealStore = defineStore("deal", () => {
    */
   async function fetchUsers() {
     const res = await get(USERS_URL);
-    state.users = res.result;
+    state.users = Object.fromEntries(res.result.map((u) => [u.ID, u]));
   }
 
   /**
@@ -72,7 +74,9 @@ export const useDealStore = defineStore("deal", () => {
    */
   async function fetchCategories() {
     const res = await get(CATEGORIES_URL);
-    state.categories = res.result.categories;
+    state.categories = Object.fromEntries(
+      res.result.categories.map((c) => [c.id, c])
+    );
   }
 
   /**
@@ -148,21 +152,14 @@ export const useDealStore = defineStore("deal", () => {
    */
   function convertDeals(result) {
     return result.map((item) => {
-      const stagedStatus = state.statuses.find(
-        ({ STATUS_ID }) => STATUS_ID === item.STAGE_ID
-      );
+      const stagedStatus = state.statuses[item.STAGE_ID];
+      console.log(stagedStatus, "STAGED STATUS");
 
-      const sourcesNamed = state.statuses.find(
-        ({ STATUS_ID }) => STATUS_ID === item.SOURCE_ID
-      );
+      const sourcesNamed = state.statuses[item.SOURCE_ID]
 
-      const currentAssignedUser = state.users.find(
-        ({ ID }) => ID === item.ASSIGNED_BY_ID
-      );
+      const currentAssignedUser = state.users[item.ASSIGNED_BY_ID];
 
-      const currentCreatedUser = state.users.find(
-        ({ ID }) => ID === item.CREATED_BY_ID
-      );
+      const currentCreatedUser = state.users[item.CREATED_BY_ID]
 
       return {
         ...item,
@@ -178,10 +175,9 @@ export const useDealStore = defineStore("deal", () => {
     });
   }
 
-
   /**
    * Устанавливает значения фильтра по id.
-   * @param {{ idFrom: number | null, idTo: number | null }} - 
+   * @param {{ idFrom: number | null, idTo: number | null }} -
    *   idFrom - начальный id, idTo - конечный id.
    *   Если какой-либо id равен null, то фильтр будет отменен.
    *   @example

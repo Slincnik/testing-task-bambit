@@ -22,7 +22,7 @@ export const numberFormatter = new Intl.NumberFormat(userLocale);
  * @param {unknown} params.data - Значение для форматирования.
  * @param {string} params.type - Тип поля (например, "datetime", "double").
  * @param {string} params.key - Ключ поля (например, "CATEGORY_ID").
- * @param {Array} params.categories - Массив категорий для поиска имени по ID.
+ * @param {Object} params.categories - Объект типа КЛЮЧ-ЗНАЧЕНИЕ, где ключ ID категории.
  * @returns {string|*} Отформатированное значение или исходное, если форматирование не требуется.
  */
 export default function formatValue({ data, type, key, categories }) {
@@ -45,7 +45,7 @@ export default function formatValue({ data, type, key, categories }) {
   }
 
   if (key === "CATEGORY_ID") {
-    return categories.find(({ id }) => id === Number(data))?.name || data;
+    return categories[data]?.name || data;
   }
 
   return data;
